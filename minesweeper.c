@@ -9,13 +9,8 @@
 
 void zero_board(struct Board *b)
 {
-	int i,j;
 	int **grid = b->grid;
-	for (i=0; i<(b->y); i++) {
-		for (j=0;j<(b->x); j++) {
-			grid[i][j]=0;
-		}
-	}
+	zero_grid(grid, b->x, b->y);
 }
 
 void place_mines(struct Board *b)
@@ -39,19 +34,7 @@ struct Board *init_board(int x, int y, int mines)
 	b->y = y;
 	b->mines = mines;
 	shots_fired = 0;
-	int **grid = malloc(sizeof(int *)*y);
-	if (grid == NULL) {
-		perror("malloc returned null");
-		exit(1);
-	}
-	int i;
-	for (i=0; i<y; i++) {
-		grid[i] = malloc(sizeof(int)*x);
-		if (grid[i] == NULL) {
-			perror("malloc returned null");
-			exit(1);
-		}
-	}
+	int **grid = init_grid(x,y);
 	b->grid = grid;
 	zero_board(b);
 	place_mines(b);
@@ -62,11 +45,7 @@ void free_board(struct Board *b)
 {
 	
 	int **grid = b->grid;
-	int i;
-	for (i=0; i<(b->y); i++) {
-		free(grid[i]);
-	}
-	free(grid);
+	free_grid(grid, b->x, b->y);
 	free(b);
 }
 
@@ -122,14 +101,6 @@ int shoot(struct Board *b, int x, int y)
 
 void print_board(struct Board *b)
 {
-	int i,j;
-	int x = b->x;
-	int y = b->y;
 	int **grid = b->grid;
-	for (i=0; i<x; i++) {
-		for (j=0; j<y; j++) {
-			printf("%d ", grid[i][j]);
-		}
-		printf("\n");
-	}
+	print_grid(grid, b->x, b->y);
 }

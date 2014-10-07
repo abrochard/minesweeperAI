@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "minesweeper.h"
+#include "grid.h"
 #define BAD -1
 #define LOST -2
 #define WON -3

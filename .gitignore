@@ -1,0 +1,13 @@
+#Object files
+*.o
+
+#Executables
+*.out
+
+#Swap files
+*.swp
+
+#Libraries
+*.a
+*.lo
+

@@ -3,9 +3,9 @@
 #include <time.h>
 #include "minesweeper.h"
 #include "grid.h"
-#define BAD -1
-#define LOST -2
-#define WON -3
+#define LOST -1
+#define WON -2
+#define BAD -3
 
 void zero_board(struct Board *b)
 {
@@ -13,13 +13,45 @@ void zero_board(struct Board *b)
 	zero_grid(grid, b->x, b->y);
 }
 
+void increase_neighbors(struct Board *b, int x, int y)
+{
+	int **grid = b->grid;
+	int max_x = b->x;
+	int max_y = b->y;
+	if (x+1 < max_x) {
+		grid[x+1][y]++;
+		if (y+1 < max_y)
+			grid[x+1][y+1]++;
+		if (y-1 > -1)
+			grid[x+1][y-1]++;
+	}
+	if (x-1 > -1) {
+		grid[x-1][y]++;
+		if (y+1 < max_y)
+			grid[x-1][y+1]++;
+		if (y-1 > -1)
+			grid[x-1][y-1]++;
+	}
+	if (y+1 < max_y)
+		grid[x][y+1]++;
+	if (y-1 > -1)
+		grid[x][y-1]++;
+}
+
+/*
+ * Mines are identified as -1 value
+ * The values in the board represent the number of neighboring mines
+*/
 void place_mines(struct Board *b)
 {
 	srandom(time(NULL));
-	int i;
+	int i, x, y;
 	int **grid = b->grid;
 	for (i=0; i<(b->mines); i++) {
-		grid[random()%(b->x)][random()%(b->y)] = 1;
+		x = random()%(b->x);
+		y = random()%(b->y);
+		grid[x][y] = -1;
+		increase_neighbors(b,x,y);
 	}
 }
 
@@ -58,45 +90,18 @@ char *board_info(struct Board *b)
 	return info;
 }
 
-int get_mines_around(struct Board *b, int x, int y)
-{
-	int sum = 0;
-	int **grid = b->grid;
-	int max_x = b->x;
-	int max_y = b->y;
-	if (x+1 < max_x) {
-		sum += grid[x+1][y];
-		if (y+1 < max_y)
-			sum += grid[x+1][y+1];
-		if (y-1 > -1)
-			sum += grid[x+1][y-1];
-	}
-	if (x-1 > -1) {
-		sum += grid[x-1][y];
-		if (y+1 < max_y)
-			sum += grid[x-1][y+1];
-		if (y-1 > -1)
-			sum += grid[x-1][y-1];
-	}
-	if (y+1 < max_y)
-		sum += grid[x][y+1];
-	if (y-1 > -1)
-		sum += grid[x][y-1];
-	return sum;
-}
-
 int shoot(struct Board *b, int x, int y)
 {
 	int **grid = b->grid;
 	if (x<0 || y<0 || x>=(b->x) || y>=(b->y))
 		return BAD;
-	else if (grid[x][y])
+	else if (grid[x][y] == -1)
 		return LOST;
 	shots_fired++;
 	if (shots_fired == (b->x)*(b->y)-(b->mines))
 		return WON;
 	else
-		return get_mines_around(b, x, y);
+		return grid[x][y];
 }
 
 void print_board(struct Board *b)

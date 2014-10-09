@@ -44,9 +44,13 @@ void print_grid(int **grid, int x, int y)
 	int i, j;
 	for (i=0; i<x; i++) {
 		for (j=0; j<y; j++) {
-			printf("%d ", grid[i][j]);
+			if (grid[i][j]<0)
+				printf("%d ", grid[i][j]);
+			else
+				printf(" %d ", grid[i][j]);
 		}
 		printf("\n");
 	}
 
 }
+

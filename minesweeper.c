@@ -13,45 +13,54 @@ void zero_board(struct Board *b)
 	zero_grid(grid, b->x, b->y);
 }
 
+/*
+ * Increases non-mine neighbors value by one
+ */
 void increase_neighbors(struct Board *b, int x, int y)
 {
 	int **grid = b->grid;
 	int max_x = b->x;
 	int max_y = b->y;
 	if (x+1 < max_x) {
-		grid[x+1][y]++;
-		if (y+1 < max_y)
+		if (grid[x+1][y] != -1)
+			grid[x+1][y]++;
+		if (y+1 < max_y && grid[x+1][y+1] != -1)
 			grid[x+1][y+1]++;
-		if (y-1 > -1)
+		if (y-1 > -1 && grid[x+1][y-1] != -1)
 			grid[x+1][y-1]++;
 	}
 	if (x-1 > -1) {
-		grid[x-1][y]++;
-		if (y+1 < max_y)
+		if (grid[x-1][y] != -1)
+			grid[x-1][y]++;
+		if (y+1 < max_y && grid[x-1][y+1] != -1)
 			grid[x-1][y+1]++;
-		if (y-1 > -1)
+		if (y-1 > -1 && grid[x-1][y-1] != -1)
 			grid[x-1][y-1]++;
 	}
-	if (y+1 < max_y)
+	if (y+1 < max_y && grid[x][y+1] != -1)
 		grid[x][y+1]++;
-	if (y-1 > -1)
+	if (y-1 > -1 && grid[x][y-1] != -1)
 		grid[x][y-1]++;
 }
 
 /*
  * Mines are identified as -1 value
  * The values in the board represent the number of neighboring mines
+ * Makes sure that no mines can be placed twice in the same case
 */
 void place_mines(struct Board *b)
 {
 	srandom(time(NULL));
-	int i, x, y;
+	int i=0, x, y;
 	int **grid = b->grid;
-	for (i=0; i<(b->mines); i++) {
+	while (i<(b->mines)) {
 		x = random()%(b->x);
 		y = random()%(b->y);
+		if (grid[x][y] == -1)
+			continue;
 		grid[x][y] = -1;
 		increase_neighbors(b,x,y);
+		i++;
 	}
 }
 

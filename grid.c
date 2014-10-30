@@ -29,12 +29,12 @@ void free_grid(int **grid, int x, int y)
 	free(grid);
 }
 
-void zero_grid(int **grid, int x, int y)
+void write_grid(int **grid, int x, int y, int value)
 {
 	int i,j;
 	for (i=0; i<y; i++) {
 		for (j=0;j<x; j++) {
-			grid[i][j]=0;
+			grid[i][j]=value;
 		}
 	}
 }

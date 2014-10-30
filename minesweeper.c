@@ -10,7 +10,7 @@
 void zero_board(struct Board *b)
 {
 	int **grid = b->grid;
-	zero_grid(grid, b->x, b->y);
+	write_grid(grid, b->x, b->y, 0);
 }
 
 /*

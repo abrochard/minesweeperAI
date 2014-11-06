@@ -54,3 +54,9 @@ void set_neighbors_prob(float **grid, int size_x, int size_y, int i, int j, int 
 	if (i<size_x-1 && j<size_y-1 && grid[i+1][j+1]!=0)
 		grid[i+1][j+1] += proba;
 }
+
+void init_AI(int size_x, int size_y, int mines)
+{
+	int **grid = init_grid(size_x, size_y);
+	write_grid(grid, size_x, size_y, -1);
+}

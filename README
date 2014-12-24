@@ -1,2 +1,4 @@
-Sample README
+MineSweeper AI
 
+Program which plays and wins at Minesweeper games.
+Split into two entities: the game and the AI.

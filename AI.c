@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <math.h>
 #include "AI.h"
 #include "grid.h"
+
+struct Proba_Board pb;
 
 /*
  * Return the number of non-zero neighbors
@@ -95,29 +99,51 @@ void write_proba_grid(float **grid, int x, int y, float value)
 
 void init_AI(int size_x, int size_y, int mines)
 {
-	struct Proba_Board pb;
 	pb.size_x = size_x;
 	pb.size_y = size_y;
 	pb.mines = mines;
 	pb.grid = init_proba_grid(pb.size_x, pb.size_y);
 	write_proba_grid(pb.grid, pb.size_x, pb.size_y, -1);
-	free_proba_grid(pb.grid, pb.size_x, pb.size_y);
+	srand(time(NULL));
+}
+
+struct Point get_point_zero()
+{
+	struct Point target;
+	target.x = -1; //TODO
+	return target;
+}
+
+struct Point get_lowest_proba_point()
+{
+	struct Point target;
+	target.x = -1; //TODO
+	return target;
 }
 
 struct Point AI_get_target()
 {
 	struct Point target;
-	target.x = 0;
-	target.y = 0;
+	//look for points at proba 0
+	target = get_point_zero();
+	if (target.x != -1)
+		return target;	
+	//look for point with lowest proba
+	target = get_lowest_proba_point();
+	if (target.x != -1)
+		return target;	
+	//pick random
+	target.x = rand()%pb.size_x;
+	target.y = rand()%pb.size_y;
 	return target;
 }
 
-void AI_send_result(int game)
+void AI_send_result(int i, int j, int game)
 {
-
+	set_neighbors_proba(pb.grid, pb.size_x, pb.size_y, i, j, game);
 }
 
 void free_AI()
 {
-	
+	free_proba_grid(pb.grid, pb.size_x, pb.size_y);
 }

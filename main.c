@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 		printf("\nTargetting: %d %d\n", target.x, target.y);
 		game = shoot(board, target.x, target.y);
 		printf("Result: %d \n\n",game);
-		AI_send_result(game);
+		AI_send_result(target.x, target.y, game);
 	}
 	printf("\n");
 	if(game==-1)

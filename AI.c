@@ -103,3 +103,21 @@ void init_AI(int size_x, int size_y, int mines)
 	write_proba_grid(pb.grid, pb.size_x, pb.size_y, -1);
 	free_proba_grid(pb.grid, pb.size_x, pb.size_y);
 }
+
+struct Point AI_get_target()
+{
+	struct Point target;
+	target.x = 0;
+	target.y = 0;
+	return target;
+}
+
+void AI_send_result(int game)
+{
+
+}
+
+void free_AI()
+{
+	
+}

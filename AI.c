@@ -103,21 +103,67 @@ void init_AI(int size_x, int size_y, int mines)
 	pb.size_y = size_y;
 	pb.mines = mines;
 	pb.grid = init_proba_grid(pb.size_x, pb.size_y);
-	write_proba_grid(pb.grid, pb.size_x, pb.size_y, -1);
+	write_proba_grid(pb.grid, pb.size_x, pb.size_y, 2);
 	srand(time(NULL));
 }
 
 struct Point get_point_zero()
 {
 	struct Point target;
-	target.x = -1; //TODO
+	target.x = -1;
+	int i,j;
+	for (i=0; i<pb.size_x; i++) {
+		for (j=0; j<pb.size_y; j++) {
+			if(pb.grid[i][j]==0) {
+				target.x=i;
+				target.y=j;
+				break;
+			}
+		}
+	}
 	return target;
 }
 
 struct Point get_lowest_proba_point()
 {
 	struct Point target;
-	target.x = -1; //TODO
+	target.x = -1;
+	int i,j;
+	float min = 2;
+	for (i=0; i<pb.size_x; i++) {
+		for (j=0; j<pb.size_y; j++) {
+			if(pb.grid[i][j]<min) {
+				target.x=i;
+				target.y=j;
+				min=pb.grid[i][j];
+			}
+		}
+	}
+	return target;
+}
+
+struct Point get_random_point()
+{
+	//by random, I mean random among the blank ones
+	//excluding neighbors of shot points
+	int size=0;
+	struct Point *list = malloc(sizeof(struct Point)*pb.size_x*pb.size_y);
+	if(list==NULL) {
+		fprintf(stderr, "malloc failed");
+		exit(1);
+	}
+	int i,j;
+	for (i=0; i<pb.size_x; i++) {
+		for (j=0; j<pb.size_y; j++) {
+			if(pb.grid[i][j]==2) {
+				list[size].x=i;
+				list[size].y=j;
+				size++;
+			}
+		}
+	}
+	struct Point target = list[rand()%size];
+	free(list);
 	return target;
 }
 
@@ -133,14 +179,14 @@ struct Point AI_get_target()
 	if (target.x != -1)
 		return target;	
 	//pick random
-	target.x = rand()%pb.size_x;
-	target.y = rand()%pb.size_y;
+	target = get_random_point();
 	return target;
 }
 
 void AI_send_result(int i, int j, int game)
 {
 	set_neighbors_proba(pb.grid, pb.size_x, pb.size_y, i, j, game);
+	pb.grid[i][j]=-1;
 }
 
 void free_AI()

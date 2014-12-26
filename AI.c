@@ -154,10 +154,13 @@ struct Point get_lowest_proba_point()
 	return target;
 }
 
-struct Point get_random_point()
+struct Point get_random_point(int risky)
 {
+	//if risky is not 1
 	//by random, I mean random among the blank ones
 	//excluding neighbors of shot points
+	//if risky is 1,
+	//random among all the non-shot ones
 	int size=0;
 	struct Point *list = malloc(sizeof(struct Point)*pb.size_x*pb.size_y);
 	if(list==NULL) {
@@ -167,7 +170,7 @@ struct Point get_random_point()
 	int i,j;
 	for (i=0; i<pb.size_x; i++) {
 		for (j=0; j<pb.size_y; j++) {
-			if(pb.grid[i][j]==2) {
+			if(pb.grid[i][j]==2 || (risky && pb.grid[i][j]!=-1 && pb.grid[i][j]!=0)) {
 				list[size].x=i;
 				list[size].y=j;
 				size++;
@@ -200,7 +203,12 @@ struct Point AI_get_target()
 		return target;	
 	}
 	//pick random
-	target = get_random_point();
+	target = get_random_point(0);
+	if (target.x != -1) {
+		pb.grid[target.x][target.y]=-1;
+		return target;	
+	}
+	target = get_random_point(1);
 	pb.grid[target.x][target.y]=-1;
 	return target;
 }

@@ -6,7 +6,7 @@
 #define MAX_X 5
 #define MAX_Y 5
 #define MAX_MINES 2
-#define TOTAL 1000000
+#define TOTAL 100000
 
 // #define DEBUG
 
@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 	int i;
 	int total=TOTAL;
 	int won=0;
+	int last_percent=0, percent=0;
 	for(i=0;i<total;i++) {
 		struct Board *board = init_board(x, y, mines);
 		init_AI(x, y, mines);
@@ -58,6 +59,11 @@ int main(int argc, char **argv)
 			won++;
 		free_board(board);
 		free_AI();
+		percent = (int)((float)i/total*100);
+		if(last_percent+1 == percent) {
+			printf("%d percent done \n",percent);
+			last_percent = percent;
+		}
 	}
 	printf("Won %d out of %d\nRatio: %f \n", won, total, (float)won/total);
 #endif

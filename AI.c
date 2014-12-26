@@ -16,22 +16,34 @@ int count_neighbors(float **grid, int size_x, int size_y, int i, int j)
 		return -1;
 	int sum=0;
 	if (i>0)
-		sum += (grid[i-1][j]!=0);
+		sum += (grid[i-1][j]!=0 && grid[i-1][j]!=-1);
 	if (i<size_x-1)
-		sum += (grid[i+1][j]!=0);
+		sum += (grid[i+1][j]!=0 && grid[i+1][j]!=-1);
 	if (j>0)
-		sum += (grid[i][j-1]!=0);
+		sum += (grid[i][j-1]!=0 && grid[i][j-1]!=-1);
 	if (j<size_y-1)
-		sum += (grid[i][j+1]!=0);
+		sum += (grid[i][j+1]!=0 && grid[i][j+1]!=-1);
 	if (i>0 && j>0)
-		sum += (grid[i-1][j-1]!=0);
+		sum += (grid[i-1][j-1]!=0 && grid[i-1][j-1]!=-1);
 	if (i>0 && j<size_y-1)
-		sum += (grid[i-1][j+1]!=0);
+		sum += (grid[i-1][j+1]!=0 && grid[i-1][j+1]!=-1);
 	if (i<size_x-1 && j>0)
-		sum += (grid[i+1][j-1]!=0);
+		sum += (grid[i+1][j-1]!=0 && grid[i+1][j-1]!=-1);
 	if (i<size_x-1 && j<size_y-1)
-		sum += (grid[i+1][j+1]!=0);
+		sum += (grid[i+1][j+1]!=0 && grid[i+1][j+1]!=-1);
 	return sum;
+}
+
+float set_proba(float f, float proba)
+{
+	if (f==0 || f==-1)
+		return f;
+	else if (f==2)
+		return proba;
+	else if (proba==0)
+		return 0;
+	else
+		return f+proba;
 }
 
 /* 
@@ -42,22 +54,22 @@ void set_neighbors_proba(float **grid, int size_x, int size_y, int i, int j, int
 {
 	int nbr_neighbors = count_neighbors(grid, size_x, size_y, i, j);
 	float proba = (float)value/nbr_neighbors;
-	if (i>0 && grid[i-1][j]!=0)
-		grid[i-1][j] += proba;
-	if (i<size_x-1 && grid[i+1][j]!=0)
-		grid[i+1][j] += proba;
-	if (j>0 && grid[i][j-1]!=0)
-		grid[i][j-1] += proba;
-	if (j<size_y-1 && grid[i][j+1]!=0)
-		grid[i][j+1] += proba;
-	if (i>0 && j>0 && grid[i-1][j-1]!=0)
-		grid[i-1][j-1] += proba;
-	if (i>0 && j<size_y-1 && grid[i-1][j+1]!=0)
-		grid[i-1][j+1] += proba;
-	if (i<size_x-1 && j>0 && grid[i+1][j-1]!=0)
-		grid[i+1][j-1] += proba;
-	if (i<size_x-1 && j<size_y-1 && grid[i+1][j+1]!=0)
-		grid[i+1][j+1] += proba;
+	if (i>0)
+		grid[i-1][j] = set_proba(grid[i-1][j], proba);
+	if (i<size_x-1)
+		grid[i+1][j] = set_proba(grid[i+1][j], proba);
+	if (j>0)
+		grid[i][j-1] = set_proba(grid[i][j-1], proba);
+	if (j<size_y-1)
+		grid[i][j+1] = set_proba(grid[i][j+1], proba);
+	if (i>0 && j>0)
+		grid[i-1][j-1] = set_proba(grid[i-1][j-1], proba);
+	if (i>0 && j<size_y-1)
+		grid[i-1][j+1] = set_proba(grid[i-1][j+1], proba);
+	if (i<size_x-1 && j>0)
+		grid[i+1][j-1] = set_proba(grid[i+1][j-1], proba);
+	if (i<size_x-1 && j<size_y-1)
+		grid[i+1][j+1] = set_proba(grid[i+1][j+1], proba);
 }
 
 float **init_proba_grid(int x, int y)
@@ -132,7 +144,7 @@ struct Point get_lowest_proba_point()
 	float min = 2;
 	for (i=0; i<pb.size_x; i++) {
 		for (j=0; j<pb.size_y; j++) {
-			if(pb.grid[i][j]<min) {
+			if(pb.grid[i][j]<min && pb.grid[i][j]>0) {
 				target.x=i;
 				target.y=j;
 				min=pb.grid[i][j];
@@ -172,14 +184,20 @@ struct Point AI_get_target()
 	struct Point target;
 	//look for points at proba 0
 	target = get_point_zero();
-	if (target.x != -1)
+	if (target.x != -1) {
+		//mark as shot
+		pb.grid[target.x][target.y]=-1;
 		return target;	
+	}
 	//look for point with lowest proba
 	target = get_lowest_proba_point();
-	if (target.x != -1)
+	if (target.x != -1) {
+		pb.grid[target.x][target.y]=-1;
 		return target;	
+	}
 	//pick random
 	target = get_random_point();
+	pb.grid[target.x][target.y]=-1;
 	return target;
 }
 
@@ -192,4 +210,22 @@ void AI_send_result(int i, int j, int game)
 void free_AI()
 {
 	free_proba_grid(pb.grid, pb.size_x, pb.size_y);
+}
+
+//FOR DEBUG
+void print_AI_grid()
+{
+	float **grid = pb.grid;
+	int x=pb.size_x, y=pb.size_y;
+	int i, j;
+	for (i=0; i<x; i++) {
+		for (j=0; j<y; j++) {
+			if (grid[i][j]<0)
+				printf("%1.1f ", grid[i][j]);
+			else
+				printf(" %1.1f ", grid[i][j]);
+		}
+		printf("\n");
+	}
+
 }

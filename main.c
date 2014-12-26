@@ -12,13 +12,15 @@ int main(int argc, char **argv)
 	int x = MAX_X;
 	int y = MAX_Y;
 	int mines = MAX_MINES;
-	printf("%d %d %d\n\n", x, y, mines);
+// 	printf("%d %d %d\n\n", x, y, mines);
 	struct Board *board = init_board(x, y, mines);
 	init_AI(x, y, mines);
 	int game=0;
 	struct Point target;
 	while (game >= 0) {
 		print_board(board);
+		printf("\n");
+		print_AI_grid();
 		printf("Target?");
 		target = AI_get_target();
 		printf("\nTargetting: %d %d\n", target.x, target.y);

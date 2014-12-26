@@ -14,6 +14,7 @@ struct Proba_Board {
 };
 
 int count_neighbors(float **grid, int size_x, int size_y, int i, int j);
+float set_proba(float f, float proba);
 void set_neighbors_proba(float **grid, int size_x, int size_y, int i, int j, int value);
 float **init_proba_grid(int x, int y);
 void free_proba_grid(float **grid, int x, int y);
@@ -25,5 +26,6 @@ struct Point get_random_point();
 struct Point AI_get_target();
 void AI_send_result(int i, int j, int game);
 void free_AI();
+void print_AI_grid();
 
 #endif

@@ -174,7 +174,11 @@ struct Point get_random_point()
 			}
 		}
 	}
-	struct Point target = list[rand()%size];
+	struct Point target;
+	if (size!=0)
+		target = list[rand()%size];
+	else
+		target.x=-1;
 	free(list);
 	return target;
 }

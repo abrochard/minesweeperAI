@@ -6,6 +6,7 @@
 #define MAX_X 5
 #define MAX_Y 5
 #define MAX_MINES 2
+#define TOTAL 1000000
 
 // #define DEBUG
 
@@ -41,7 +42,7 @@ int main(int argc, char **argv)
 #endif
 #ifndef DEBUG
 	int i;
-	int total=1000000;
+	int total=TOTAL;
 	int won=0;
 	for(i=0;i<total;i++) {
 		struct Board *board = init_board(x, y, mines);

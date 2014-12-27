@@ -58,8 +58,8 @@ int main(int argc, char **argv)
 			free_board(board);
 			free_AI();
 			percent = (int)((float)i/total*100);
-			if(last_percent+1 == percent) {
-				printf("%d percent done \n",percent);
+			if(last_percent < percent) {
+				printf("%d percent done, ratio: %f \n", percent, (float)won/(i+1));
 				last_percent = percent;
 			}
 		}

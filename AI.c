@@ -134,6 +134,23 @@ void init_AI(int size_x, int size_y, int mines)
 }
 
 /*
+ * Uses all the data from the previous shots
+ * and refines every proba on the board
+ */
+void refine_proba()
+{
+	int i,j;
+	int value;
+	for (i=0; i<pb.size_x; i++) {
+		for (j=0; j<pb.size_y; j++) {
+			value = pb.grid[i][j];
+			if (value<0 && value>ZERO)
+				set_neighbors_proba(pb.grid, pb.size_x, pb.size_y, i, j, -1*value);
+		}
+	}
+}
+
+/*
  *Returns the first point with zero chances to be a mine
  */
 struct Point get_point_zero()
@@ -209,8 +226,8 @@ struct Point get_random_point(int risky)
 
 struct Point AI_get_target()
 {
-	//refine all weights with new data
-	//..
+	//refine all proba with new data
+	refine_proba();
 	struct Point target;
 	//look for points at proba 0
 	target = get_point_zero();

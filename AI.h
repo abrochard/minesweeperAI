@@ -20,6 +20,7 @@ float **init_proba_grid(int x, int y);
 void free_proba_grid(float **grid, int x, int y);
 void write_proba_grid(float **grid, int x, int y, float value);
 void init_AI(int size_x, int size_y, int mines);
+void refine_proba();
 struct Point get_point_zero();
 struct Point get_lowest_proba_point();
 struct Point get_random_point(int risky);

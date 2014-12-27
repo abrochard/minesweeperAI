@@ -50,12 +50,12 @@ int count_neighbors(float **grid, int size_x, int size_y, int i, int j)
 
 float set_proba(float f, float proba)
 {
-	if (f<=0 && f!=BLANK)
+	if (f<=0 && f>BLANK)
 		return f;
-	else if (f==BLANK)
-		return proba;
 	else if (proba==0)
 		return ZERO;
+	else if (f==BLANK)
+		return proba;
 	else
 		return f+proba;
 }
@@ -248,10 +248,14 @@ void print_AI_grid()
 	int i, j;
 	for (i=0; i<x; i++) {
 		for (j=0; j<y; j++) {
-			if (grid[i][j]<0)
-				printf("%1.1f ", grid[i][j]);
-			else
-				printf(" %1.1f ", grid[i][j]);
+ 			if (grid[i][j]<0 && grid[i][j]>ZERO)
+ 				printf(" %1.0f ", grid[i][j]);
+ 			else if (grid[i][j]==BLANK)
+ 				printf("  O ");
+ 			else if (grid[i][j]==ZERO)
+ 				printf("  X ");
+ 			else
+				 printf("%1.1f ", grid[i][j]);
 		}
 		printf("\n");
 	}

@@ -8,7 +8,7 @@
 #define MAX_MINES 2
 #define TOTAL 100000
 
-// #define DEBUG
+#define DEBUG
 
 int main(int argc, char **argv)
 {
